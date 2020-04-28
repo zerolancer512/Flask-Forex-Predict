@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html >
+<!--From https://codepen.io/frytyler/pen/EGdtg-->
+<head>
+  <meta charset="UTF-8">
+  <title>Forex Market Predictor</title>
+  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  
+</head>
+
+<body>
+ <div class="login">
+  <h1>UP OR DOWN</h1>
+
+  <br>     <!-- Main Input For Receiving Query to our ML -->
+  <br>
+     <form action="localhost:5000/predict_one/predict"method="post">
+      <label>Input your trading information: </label>
+      <br>
+      
+      <input type="text" name="Close" placeholder="Close" required="required" />
+      <input type="text" name="High" placeholder="High" required="required" />
+      <input type="text" name="Low" placeholder="Low" required="required" />
+      <input type="text" name="return_1" placeholder="Return 1" required="required" />
+      <input type="text" name="return_2" placeholder="Return 2" required="required" />
+      <input type="text" name="return_3" placeholder="Return 3" required="required" />
+      
+
+        <button type="submit" class="btn btn-primary btn-block btn-large">Predict your trading</button>
+    </form>
+
+   <br>
+   {{ prediction_text }}
+   <br>
+   <br>
+
+   <form action ="{{ url_for('predictfromfile')}}"method="post"enctype="multipart/form-data">
+      <label for="datafile">Choose file to upload</label>
+      <input type="file"name="datafile"accept=".csv, .txt">
+      <button type="submit" class="btn btn-primary btn-block btn-large">Predict From Dataset</button>
+    </form>
+    {{text}}
+
+ </div>
+
+
+</body>
+</html>

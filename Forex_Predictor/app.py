@@ -1,12 +1,12 @@
 import warnings
 warnings.filterwarnings('ignore')
 import numpy as np
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, make_response
 import pickle
 import pandas as pd
 
 app = Flask(__name__)
-model = pickle.load(open('C:\\Users\\ToreLeon\\OneDrive\\Tài liệu\\GitHub\\Deployment-flask\\model.pkl', 'rb'))
+model = pickle.load(open('C:\\Users\\ToreLeon\\OneDrive\\Máy tính\\ Git\\Forex_Predictor\\model\\model.pkl', 'rb'))
 
 @app.route('/')
 def home():
@@ -29,28 +29,16 @@ def predict():
 
     return render_template('index.html', prediction_text='Your trading should be {}'.format(output))
 
-@app.route('/predictfromfile', methods=['GET', 'POST'])
-def predictfromfile():
-    str = ''
+@app.route('/preprocessing', methods = ['GET', 'POST'])
+def preprocessing():
     file = request.files['datafile']
+    if not file:
+        text = 'No file selected'
     data = pd.read_csv(file)
     data['return_1'] = data['return_2'] - data['lag_return_1']
-    data = data[['Close', 'High', 'Low', 'return_1', 'return_2', 'return_3']].values
-    prediction = model.predict(data)
-    for i in prediction:
-        if i == 0:
-            str += 'Down'
-        else:
-            str += 'Up'
-    return render_template('index.html', text = str)
-def contact():
-    if request.method == 'POST':
-        if 'predicone' in request.form:
-            predict()
-        else:
-            predictfromfile()
-    else:
-        render_template('index.html')
+    data = data.to_csv('Pre-Processed_Data.csv', index = False)
+    text = 'preprocessed success'
+    return render_template('index.html', text = text, data = data)
 
 @app.route('/predict_api',methods=['POST'])
 def predict_api():

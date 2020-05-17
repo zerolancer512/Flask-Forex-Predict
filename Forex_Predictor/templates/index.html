@@ -18,7 +18,7 @@
 
   <br>     <!-- Main Input For Receiving Query to our ML -->
   <br>
-     <form action="localhost:5000/predict_one/predict"method="post">
+     <form action="{{url_for('predict')}}"method="post">
       <label>Input your trading information: </label>
       <br>
       
@@ -38,14 +38,16 @@
    <br>
    <br>
 
-   <form action ="{{ url_for('predictfromfile')}}"method="post"enctype="multipart/form-data">
-      <label for="datafile">Choose file to upload</label>
-      <input type="file"name="datafile"accept=".csv, .txt">
-      <button type="submit" class="btn btn-primary btn-block btn-large">Predict From Dataset</button>
-    </form>
-    {{text}}
 
- </div>
+   <label>Pre-process the input Data </label>
+   <form action ="{{ url_for('preprocessing')}}"method="post"enctype="multipart/form-data">
+    <label for="datafile">Choose file to upload</label>
+    <input type="file"name="datafile"accept=".csv, .txt">
+    <button type="submit" class="btn btn-primary btn-block btn-large">Pre-Process</button>
+  </form>
+  {{text}}
+
+  {{data}}
 
 
 </body>

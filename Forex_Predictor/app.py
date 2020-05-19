@@ -4,9 +4,11 @@ import numpy as np
 from flask import Flask, request, jsonify, render_template, make_response
 import pickle
 import pandas as pd
-
+import os
+ 
+dirpath = os.getcwd()
 app = Flask(__name__)
-model = pickle.load(open('C:\\Users\\ToreLeon\\OneDrive\\Máy tính\\ Git\\Forex_Predictor\\model\\model.pkl', 'rb'))
+model = pickle.load(open(dirpath + '\\Forex_Predictor\\model\\model.pkl', 'rb'))
 
 @app.route('/')
 def home():
@@ -34,11 +36,15 @@ def preprocessing():
     file = request.files['datafile']
     if not file:
         text = 'No file selected'
-    data = pd.read_csv(file)
-    data['return_1'] = data['return_2'] - data['lag_return_1']
-    data = data.to_csv('Pre-Processed_Data.csv', index = False)
+    df = pd.read_csv(file)
+    df['return_1'] = df['return_2'] - df['lag_return_1']
+    df = df.to_html(dirpath+ '\\Forex_Predictor\\templates\\Pre-Processed_Data.html')
     text = 'preprocessed success'
-    return render_template('index.html', text = text, data = data)
+    return render_template('Pre-Processed_Data.html')
+
+
+
+
 
 @app.route('/predict_api',methods=['POST'])
 def predict_api():

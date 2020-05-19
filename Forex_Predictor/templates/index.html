@@ -44,10 +44,31 @@
     <label for="datafile">Choose file to upload</label>
     <input type="file"name="datafile"accept=".csv, .txt">
     <button type="submit" class="btn btn-primary btn-block btn-large">Pre-Process</button>
-  </form>
-  {{text}}
+{{text}}
 
-  {{data}}
+</form>
+
+<label>Feature selection Data </label>
+<form action ="{{ url_for('FeatureSelection')}}"method="post"enctype="multipart/form-data">
+ <label for="datafile">Choose file to upload</label>
+ <input type="file"name="datafile"accept=".csv, .txt">
+ <button type="submit" class="btn btn-primary btn-block btn-large">Feature Select</button>
+
+</form>
+
+{{text}}
+
+</form>
+
+<label>Classification Data </label>
+<form action ="{{ url_for('Classification')}}"method="get"enctype="multipart/form-data">
+ <label for="datafile">Choose file to upload</label>
+ <input type="file"name="datafile"accept=".csv, .txt">
+ <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+
+</form>
+{{text}}
+
 
 
 </body>

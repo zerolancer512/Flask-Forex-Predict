@@ -1,7 +1,7 @@
 import warnings
 warnings.filterwarnings('ignore')
 import numpy as np
-from flask import Flask, request, jsonify, render_template, send_file, abort
+from flask import Flask, request, jsonify, render_template, make_response, abort
 import pickle
 import pandas as pd
 import os
@@ -20,9 +20,11 @@ def home():
     return render_template('index.html')
 
 @app.route('/download/<path:filename>', methods = ['GET', 'POST'])
-def download(filename):
-    path = dirpath + '\\{}'.format(filename)
-    return send_file(path, as_attachment=True)
+def download(data, filename):
+    resp = make_response(data.to_csv(index = False))
+    resp.headers["Content-Disposition"] = "attachment; filename={}.csv".format(filename)
+    resp.headers["Content-Type"] = "text/csv"
+    return resp
 
 
 
@@ -48,9 +50,8 @@ def preprocessing():
     else:
         df = pd.read_csv(file)
         df['return_1'] = df['return_2'] - df['lag_return_1']
-        df.to_csv('Preprocessed_Data.csv', index = False)
         render_template('index.html', text = 'Pre - processing completed')
-        return download('Preprocessed_Data.csv')
+        return download(df, 'Preprocessed_Data')
         
         
 @app.route('/FeatureSelection', methods = ['GET', 'POST'])
@@ -61,9 +62,8 @@ def FeatureSelection():
     else:
         df = pd.read_csv(file)
         df = df[['Close', 'High', 'Low', 'return_1', 'return_2', 'return_3']]
-        df.to_csv('FeatureSelected_Data.csv', index  = False)
         render_template('index.html', text = 'Feature Selection completed')
-        return download('FeatureSelected_Data.csv')
+        return download(df, 'FeatureSelected_Data')
 
 @app.route('/Classification', methods = ['POST', 'GET'])
 def Classification():
@@ -73,9 +73,8 @@ def Classification():
     else:
         df = pd.read_csv(file)
         df['Up_down_predict'] = model.predict(df.values)
-        df.to_csv('Predicted_Data.csv', index = False)
         render_template('index.html', text = 'Classification completed')
-        return download('Predicted_Data.csv')
+        return download(df, 'Predicted_Data')
 
 
 

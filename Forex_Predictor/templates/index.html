@@ -1,54 +1,150 @@
 <!DOCTYPE html>
-<html >
-<!--From https://codepen.io/frytyler/pen/EGdtg-->
+<html lang="en" >
 <head>
   <meta charset="UTF-8">
   <title>Forex Market Predictor</title>
-  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
-<link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
-<link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
-<link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-  
+<link rel="stylesheet" href="{{url_for('static', filename='css//style.css')}}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+
 </head>
-
 <body>
- <div class="login">
-  <h1>UP OR DOWN</h1>
+<!-- partial:index.partial.html -->
+<h1>UP OR DOWN</h1>
 
-  <br>     <!-- Main Input For Receiving Query to our ML -->
-  <br>
-     <form action="{{url_for('predict')}}"method="post">
-      <label>Input your trading information: </label>
+<div class="pc-tab">
+<input checked="checked" id="tab1" type="radio" name="pct" />
+<input id="tab2" type="radio" name="pct" />
+<input id="tab3" type="radio" name="pct" />
+<input id="tab4" type="radio" name="pct" />
+<input id="tab5" type="radio" name="pct" />
+<input id="tab6" type="radio" name="pct" />
+  <nav>
+    <ul>
+      <li class="tab1">
+        <label for="tab1">Predict your trading</label>
+      </li>
+      <li class="tab2">
+        <label for="tab2">Data Pre-processing</label>
+      </li>
+      <li class="tab3">
+        <label for="tab3">Feature Extraction</label>
+      </li>
+      <li class="tab4">
+        <label for="tab4">Train your model</label>
+      </li>
+      <li class="tab5">
+        <label for="tab5">Predict your data</label>
+      </li>
+      <li class="tab6">
+        <label for="tab6">Evaluate model</label>
+      </li>
+    </ul>
+  </nav>
+  <section>
+    <div class="tab1">
+      <h2>Input your trading</h2>
+      <div class="input">
+        <form action="{{url_for('predict')}}"method="post">        
+          <input type="text" name="Close" placeholder="Close" required="required" />
+          <br>
+          <input type="text" name="High" placeholder="High" required="required" />
+          <br>
+          <input type="text" name="Low" placeholder="Low" required="required" />
+          <br>
+          <input type="text" name="return_1" placeholder="Return 1" required="required" />
+          <br>
+          <input type="text" name="return_2" placeholder="Return 2" required="required" />
+          <br>
+          <input type="text" name="return_3" placeholder="Return 3" required="required" />
+          <br>
+          <br>
+          <button type="submit" class="btn btn-primary btn-block btn-large">Predict your trading</button>
+        </form>
+       <br>
+       {{ prediction_text }}
+      </div>
+    </div>
+    <div class="tab2">
+      <h2>Pre-process your data</h2>
+      <div class="input">
+      <form action ="{{ url_for('preprocessing')}}"method="post"enctype="multipart/form-data">
+        <label for="datafile">Choose file to upload</label>
+        <input type="file"name="datafile"accept=".csv, .txt">
+        <br>
+        <br>
+        <button type="submit" class="btn btn-primary btn-block btn-large">Pre-Process</button>
+      </form>
       <br>
-      
-      <input type="text" name="Close" placeholder="Close" required="required" />
-      <input type="text" name="High" placeholder="High" required="required" />
-      <input type="text" name="Low" placeholder="Low" required="required" />
-      <input type="text" name="return_1" placeholder="Return 1" required="required" />
-      <input type="text" name="return_2" placeholder="Return 2" required="required" />
-      <input type="text" name="return_3" placeholder="Return 3" required="required" />
-      
-
-        <button type="submit" class="btn btn-primary btn-block btn-large">Predict your trading</button>
+      {{message_1}}
+      </div>
+    </div>
+    <div class="tab3">
+      <h2>Extract feature from data</h2>
+      <div class="input">
+    <form action ="{{ url_for('FeatureSelection')}}"method="post"enctype="multipart/form-data">
+     <label for="datafile">Choose file to upload</label>
+     <input type="file"name="datafile"accept=".csv, .txt">
+     <br>
+     <br>
+     <button type="submit" class="btn btn-primary btn-block btn-large">Feature Select</button>
+    
     </form>
+    <br>
+    {{message_2}}
+      </div>
+    </div>
+    <div class="tab4">
+      <h2>Train Your Data</h2>
+      <div class="input">
+        <form action ="{{ url_for('TrainNewData')}}"method="post"enctype="multipart/form-data">
+         <label for="datafile">Choose file to upload</label>
+         <input type="file"name="datafile"accept=".csv, .txt">
+         <br>
+         <br>
+         <button type="submit" class="btn btn-primary btn-block btn-large">Train</button>
+        
+        </form>
+        <br>
+        {{message_6}}
+          </div>
+    </div>
+    <div class="tab5">
+      <h2>Predict your data</h2>
+      <div class="input">
+    <form action ="{{ url_for('Classification')}}"method="post"enctype="multipart/form-data">
+     <label for="datafile">Choose file to upload</label>
+     <input type="file"name="datafile"accept=".csv, .txt">
+     <br>
+     <br>
+     <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button>
+    
+    </form>
+    <br>
+    {{message_3}}
+    </div>
+    </div>
+    <div class="tab6">
+      <h2>Evaluate model performance</h2>
+      <div class="input">
+      <form action ="{{ url_for('Evaluation')}}"method="post"enctype="multipart/form-data">
+        <label for="datafile">Choose file to upload</label>
+        <input type="file"name="datafile"accept=".csv, .txt">
+        <br>
+        <br>
+        <button type="submit" class="btn btn-primary btn-block btn-large">Evaluate</button>
+       
+       </form>
+       <br>
+       {% autoescape false %}
+       {{message_4}}
+      {% endautoescape %}
+      </div>
+    </div>
+  </section>
+</div>
 
-   <br>
-   {{ prediction_text }}
-   <br>
-   <br>
-
-
-   <label>Pre-process the input Data </label>
-   <form action ="{{ url_for('preprocessing')}}"method="post"enctype="multipart/form-data">
-    <label for="datafile">Choose file to upload</label>
-    <input type="file"name="datafile"accept=".csv, .txt">
-    <button type="submit" class="btn btn-primary btn-block btn-large">Pre-Process</button>
-  </form>
-  {{text}}
-
-  {{data}}
-
+<!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script><script  src="{{url_for('static', filename='js/script.js')}}"></script>
 
 </body>
 </html>
